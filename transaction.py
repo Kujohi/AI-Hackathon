@@ -59,35 +59,38 @@ def analyze_whale_transactions(transactions, exchange, wallet):
 
     return deposits, withdrawals, total_deposit_amount, total_withdraw_amount
 
-def track_whales():
-    latest_block = get_latest_block()
-    past_block = calculate_past_block(latest_block, 7)
+def track_whales(token):
+    if token == "eth":
+        latest_block = get_latest_block()
+        past_block = calculate_past_block(latest_block, 7)
 
-    total_deposits = 0
-    total_withdrawals = 0
-    total_deposit_amount = 0
-    total_withdraw_amount = 0
+        total_deposits = 0
+        total_withdrawals = 0
+        total_deposit_amount = 0
+        total_withdraw_amount = 0
 
-    for exchange, wallets in EXCHANGE_WALLETS.items():
-        for wallet in wallets:
-            transactions = get_recent_transactions(wallet, past_block, latest_block)
-            deposits, withdrawals, deposit_amount, withdraw_amount = analyze_whale_transactions(transactions, exchange, wallet)
-            
-            total_deposits += deposits
-            total_withdrawals += withdrawals
-            total_deposit_amount += deposit_amount
-            total_withdraw_amount += withdraw_amount
+        for exchange, wallets in EXCHANGE_WALLETS.items():
+            for wallet in wallets:
+                transactions = get_recent_transactions(wallet, past_block, latest_block)
+                deposits, withdrawals, deposit_amount, withdraw_amount = analyze_whale_transactions(transactions, exchange, wallet)
+                
+                total_deposits += deposits
+                total_withdrawals += withdrawals
+                total_deposit_amount += deposit_amount
+                total_withdraw_amount += withdraw_amount
 
-    summary = (
-        "\n📢 **Whale Transaction Summary (Last 7 Days)**:\n"
-        f"🟢 Whale Deposits: {total_deposits} (Total: {total_deposit_amount:.2f} ETH)\n"
-        f"🔴 Whale Withdrawals: {total_withdrawals} (Total: {total_withdraw_amount:.2f} ETH)\n"
-        f"🚨 Total whale withdrawals in the last 7 days: {total_withdrawals}"
-    )
-    return summary
+        summary = (
+            "\n📢 **Whale Transaction Summary (Last 7 Days)**:\n"
+            f"🟢 Whale Deposits: {total_deposits} (Total: {total_deposit_amount:.2f} ETH)\n"
+            f"🔴 Whale Withdrawals: {total_withdrawals} (Total: {total_withdraw_amount:.2f} ETH)\n"
+            f"🚨 Total whale withdrawals in the last 7 days: {total_withdrawals}"
+        )
+        return summary
+    else:
+        return "There is no whales' transaction data"
 
 def main():
-   print(track_whales())
+   print(track_whales(token = 'eth'))
 
 if __name__ == "__main__":
     main()
